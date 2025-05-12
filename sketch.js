@@ -1,7 +1,7 @@
 let m;
 let d;
 let molds = [];
-let num = 8000;
+let num = 1000;
 function setup() {
   createCanvas(600, 600);
   angleMode(DEGREES);
@@ -22,6 +22,7 @@ function setup() {
   // The number of values depends on the canvas size and pixel density (macbook has 2)
   // updatePixels() must be called after making any changes
   // 
+  
 }
 
 function draw() {
@@ -33,8 +34,12 @@ function draw() {
   molds[i].display();
   molds[i].update();
   }
+
+  //evaporateMap();
+
+  //updatePixels();
   
-  //filter(BLUR,0.1);
+  //filter();
   //console.log(frameRate());
   //drawingContext.filter = 'blur(8px)';
 }

@@ -20,6 +20,7 @@ class Mold
         this.rSensorPos = createVector(0,0);
         this.fSensorPos = createVector(0,0);
         this.lSensorPos = createVector(0,0);
+        this.velocityMag = 1;
     }
     display()
     {
@@ -32,10 +33,20 @@ class Mold
     }
     update()
     {
-        this.vx = cos(this.theta);
-        this.vy = sin(this.theta);
-        this.pos.x = (this.pos.x + this.vx + width)%width;
-        this.pos.y = (this.pos.y + this.vy + height)%height;
+        this.vx = this.velocityMag*cos(this.theta);
+        this.vy = this.velocityMag*sin(this.theta);
+
+        // this.pos.x = (this.pos.x + this.vx + width)%width;
+        // this.pos.y = (this.pos.y + this.vy + height)%height;
+        this.pos.x = this.pos.x + this.vx ;
+        this.pos.y = this.pos.y + this.vy ;
+        if (this.pos.x<0 || this.pos.x >= width || this.pos.y < 0 || this.pos.y >= height)
+        {
+            this.pos.x = min(width-4,max(0,this.pos.x));
+            this.pos.y = min(height-4,max(0,this.pos.y));
+            this.theta=random(360)
+        }
+
         this.updateSensorPosition(this.theta,this.SesnorAngle)
         //print(this.x)
 
@@ -49,6 +60,7 @@ class Mold
         //circle(this.lSensorPos.x,this.lSensorPos.y,this.rad*2);       
         //pop();
         let l, r,f;
+        
         let collapsed_index = 4 *( d * floor(this.rSensorPos.y))*(d * width)+(4*(d*floor(this.rSensorPos.x)))
         r = pixels[collapsed_index];
         collapsed_index = 4 *( d * floor(this.fSensorPos.y))*(d * width)+(4*(d*floor(this.fSensorPos.x)))
@@ -77,6 +89,9 @@ class Mold
         {
             this.theta+=this.turnAngle;
         }
+
+
+
     }
     updateSensorPosition(angle,angle_t)
     {
@@ -88,4 +103,26 @@ class Mold
         this.lSensorPos.y = (this.pos.y + this.SensorPercption*sin(angle-angle_t)+height)%height;
 
     }
+}
+function evaporateMap()
+{
+    loadPixels();
+
+    let evaporationSpeed = 50;
+    for (let i=0; i<width; i++)
+    {
+        for (let j=0; j<height; j++)
+        {
+            let position = 4 *(d*j)*(d* width)+(4*(d*i));
+            //print(pixels[position]);
+            if (pixels[position]==0)
+            {
+            continue;
+            }
+            let evaporatedColor = max(0,pixels[position+3]-evaporationSpeed);
+            pixels[position+3] = evaporatedColor;
+        }
+    }
+    updatePixels();
+
 }
